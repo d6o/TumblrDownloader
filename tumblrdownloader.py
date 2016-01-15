@@ -93,10 +93,11 @@ def help(error):
 	if (error > 0):
 		print 'Error:', error
 		print ''
-	print 'tumblrdownloader.py -s <subdomain> -t <chunck>'
+	print 'tumblrdownloader.py -s <subdomain> -t <chunck> -o <output>'
 	print 'Tumblr: http://bibliammo.tumblr.com/'
 	print 'example: tumblrdownloader.py -s bibliammo'
 	print 'example: tumblrdownloader.py -s bibliammo -c 10'
+	print 'example: tumblrdownloader.py -s bibliammo -o allimages'
 	sys.exit(error)
 
 def main(argv):
