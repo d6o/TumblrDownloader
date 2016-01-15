@@ -1,9 +1,9 @@
 # TumblrDownloader
-Download all imagens from a Tumblr
+Download all imagens from a Tumblr, in highest resolution
 
 ## Screenshots
 
-<img src="preview/demo.png" alt="Start download" width="100%"/>
+<img src="preview/demo.png" alt="Start Tumblr Download" width="100%"/>
 <img src="preview/demo2.png" alt="All images were downloaded" width="100%"/>
 
 ## Requirements
@@ -39,4 +39,4 @@ Tumblr: http://bibliammo.tumblr.com/
 * Asynchronous downloads
 * Resume download
 * Limit total downloads
-* Keyboard Interrupt
+* Resolution selector

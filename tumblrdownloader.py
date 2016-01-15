@@ -137,7 +137,11 @@ def main(argv):
 		help(4)
 
 	print 'Downloading Subdomain: ', subdomain
-	download(subdomain,chunck,output)
+
+	try:
+		download(subdomain,chunck,output)
+	except KeyboardInterrupt:
+		print 'Interrupt received, stopping downloads'
 
 if __name__ == "__main__":
    main(sys.argv[1:])
