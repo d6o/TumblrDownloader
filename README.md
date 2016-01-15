@@ -13,17 +13,21 @@ Download all imagens from a Tumblr
 ## Command line syntax
 
 ```bash
-python tumblrdownloader.py -s <subdomain> -t <chunck>
+python tumblrdownloader.py -s <subdomain> -t <chunck> -o <output_folder>
 ```
 Tumblr: http://bibliammo.tumblr.com/
 
-###example 1
+###Example 1
 ```bash
  tumblrdownloader.py -s bibliammo
 ```
-###example 2
+###Example 2
 ```bash
  tumblrdownloader.py -s bibliammo -c 10
+```
+###Example 3
+```bash
+ tumblrdownloader.py -s bibliammo -o allimages
 ```
 
 ## Find a bug/issue or simply want to request a new feature?
@@ -35,3 +39,4 @@ Tumblr: http://bibliammo.tumblr.com/
 * Asynchronous downloads
 * Resume download
 * Limit total downloads
+* Keyboard Interrupt
