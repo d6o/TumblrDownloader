@@ -10,7 +10,6 @@ import re
 import os
 import sys,getopt
 
-IMG_PATH = "images"
 API_URL = "http://#subdomain#.tumblr.com/api/read?type=photo&num=#chunck#&start=#start#"
 
 def createfolder(name):
@@ -20,12 +19,12 @@ def createfolder(name):
 	if not os.path.exists(name):
  		os.makedirs(name)
 
-def downloadimage(url,subdomain):
+def downloadimage(url,subdomain,output):
 	'''
 		Download a image to subdomain folder.
 	'''
 	file_name 	= subdomain + "_" + url.split('/')[-1]
-	folder_path = IMG_PATH + "/" + subdomain
+	folder_path = output + "/" + subdomain
 
 	createfolder(folder_path)
 
@@ -70,7 +69,7 @@ def finish():
 	print 'All images were downloaded.'
 	sys.exit()
 
-def download(subdomain,chunck):
+def download(subdomain,chunck,output):
 	'''
 		download all images from a Tumblr
 	'''
@@ -85,7 +84,7 @@ def download(subdomain,chunck):
 			finish()
 
 		for image in imagelist:
-			downloadimage(image,subdomain)
+			downloadimage(image,subdomain,output)
 
 def help(error):
 	'''
@@ -102,7 +101,7 @@ def help(error):
 
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hs:c:",["help","subdomain=","chunck="])
+		opts, args = getopt.getopt(argv,"hs:c:o:",["help","subdomain=","chunck=","output="])
 	except getopt.GetoptError:
 		print 'Argument invalid'
 		help(1)
@@ -112,6 +111,7 @@ def main(argv):
 		help(2)
 
 	chunck = 50
+	output = "images"
 
 	for opt, arg in opts:
 		if opt == ("-h", "--help"):
@@ -120,17 +120,23 @@ def main(argv):
 			subdomain = arg
 		elif opt in ("-t", "--chunck"):
 			chunck = arg
+		elif opt in ("-o", "--output"):
+			output = arg
 
 	if not subdomain:
 		print 'Subdomain invalid'
 		help(3)
 
 	if (chunck <1):
-		print 'chunck invalid'
+		print 'Chunck invalid'
+		help(4)
+
+	if not output:
+		print 'Output invalid'
 		help(4)
 
 	print 'Downloading Subdomain: ', subdomain
-	download(subdomain,chunck)
+	download(subdomain,chunck,output)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
