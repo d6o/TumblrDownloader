@@ -15,13 +15,15 @@ class TumblrDownloader:
 
 	api_url	= 'http://#subdomain#.tumblr.com/api/read?type=photo&num=#chuck#&start=#start#' 
 
-	def __init__(self, subdomain, chuck, output, resolution, tagged, chrono):
+	def __init__(self, subdomain, chuck, output, resolution, tagged, chrono, total, start):
 		self._subdomain = subdomain
 		self._chuck = chuck
 		self._output = output
 		self._resolution = resolution
 		self._tagged = tagged
 		self._chrono = chrono
+		self._total = total
+		self._start = start
 
 		self.api_url = self.api_url.replace("#subdomain#",self._subdomain)
 		self.api_url = self.api_url.replace("#chuck#",str(self._chuck))
@@ -53,23 +55,27 @@ class TumblrDownloader:
 			download all images from a Tumblr
 		'''
 
-		start = 0
-
 		while True:
-			imagelist = self._getimages(start)
-			start     = start + self._chuck
+			imagelist	=	self._getimages()
+			self._start += 	self._chuck
 
 			if not imagelist:
 				break
 
-			for image in imagelist:
+			for image in imagelist[0:self._total]:
 				self._downloadimage(image)
+				self._total -= 1;
 
-	def _getimages(self, start):
+			if (self._total <= 0):
+				break
+
+	def _getimages(self):
 		'''
 			Get all images returned by Tumblr API
 		'''
-		site = self.api_url.replace("#start#",str(start))
+		site = self.api_url.replace("#start#",str(self._start))
+
+		print site
 
 		file = urllib2.urlopen(site)
 		data = file.read()
@@ -110,12 +116,16 @@ def main(argv):
 	parser = argparse.ArgumentParser(description="Download all images from a Tumblr")
 	parser.add_argument("subdomain", type=str, 
 		help="Tumblr subdomain you want to download")
-	parser.add_argument("--chuck", type=int, default=50, 
-		help="The number of posts to return each call to Tumblrs API")
+	parser.add_argument("--chuck", type=int, default=20, 
+		help="The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.")
+	parser.add_argument("--total", type=int,
+		help="Total images to download")
+	parser.add_argument("--start", type=int, default=0, 
+		help="The post offset to start from. The default is 0.")
 	parser.add_argument("--output", type=str, default="images", 
 		help="Output folder")
 	parser.add_argument("--resolution", type=int, default=1280, choices=[1280, 500, 400, 250, 100, 75],
-        help="Select Max Width to download")
+        help="Select Max Width to download. The default is 1280.")
 	parser.add_argument("--tagged", type=str,
 		help="Download only images with tag")
 	parser.add_argument("--chrono", action="store_true", 
@@ -126,7 +136,8 @@ def main(argv):
 	print 'Downloading Subdomain: ', args.subdomain
 
 	try:
-		td = TumblrDownloader(args.subdomain,args.chuck,args.output,args.resolution,args.tagged,args.chrono)
+		td = TumblrDownloader(args.subdomain,args.chuck,args.output,args.resolution,args.tagged,args.chrono,
+			args.total,args.start)
 		td.download()
 		print 'All images were downloaded.'
 	except KeyboardInterrupt:
