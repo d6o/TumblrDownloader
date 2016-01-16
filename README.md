@@ -12,7 +12,7 @@ Download all imagens from a Tumblr, in highest resolution
 ## Usage
 
 ```bash
-tumblrdownloader.py [-h] [--chuck CHUCK] [--total TOTAL]
+tumblrdownloader.py [-h] [--chunk CHUNK] [--total TOTAL]
                     [--start START] [--output OUTPUT]
                     [--resolution {1280,500,400,250,100,75}]
                     [--tagged TAGGED] [--chrono] [--threads THREADS]
@@ -25,7 +25,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --chuck CHUCK         The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.
+  --chunk CHUNK         The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.
   --total TOTAL         Total images to download
   --start START         The post offset to start from. The default is 0.
   --output OUTPUT       Output folder
@@ -43,7 +43,7 @@ Tumblr: http://{subdomain}.tumblr.com/
 ```
 ###Example 2
 ```bash
- python tumblrdownloader.py --chuck 10 subdomain
+ python tumblrdownloader.py --chunk 10 subdomain
 ```
 ###Example 3
 ```bash
@@ -51,7 +51,7 @@ Tumblr: http://{subdomain}.tumblr.com/
 ```
 ###Example 4 
 ```bash
- python tumblrdownloader.py --chuck 1 --output images2 --resolution 100 --chrono --tagged sunday subdomain
+ python tumblrdownloader.py --chunk 1 --output images2 --resolution 100 --chrono --tagged sunday subdomain
 ```
 
 ## Find a bug/issue or simply want to request a new feature?

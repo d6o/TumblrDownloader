@@ -40,11 +40,11 @@ class DownloadThread(threading.Thread):
 
 class TumblrDownloader:
 
-	api_url	= 'http://#subdomain#.tumblr.com/api/read?type=photo&num=#chuck#&start=#start#' 
+	api_url	= 'http://#subdomain#.tumblr.com/api/read?type=photo&num=#chunk#&start=#start#' 
 
-	def __init__(self, subdomain, chuck, output, resolution, tagged, chrono, total, start, threads):
+	def __init__(self, subdomain, chunk, output, resolution, tagged, chrono, total, start, threads):
 		self._subdomain = subdomain
-		self._chuck 	= chuck
+		self._chunk 	= chunk
 		self._output 	= output
 		self._resolution = resolution
 		self._tagged 	= tagged
@@ -54,7 +54,7 @@ class TumblrDownloader:
 		self._threads	= threads
 
 		self.api_url = self.api_url.replace("#subdomain#",self._subdomain)
-		self.api_url = self.api_url.replace("#chuck#",str(self._chuck))
+		self.api_url = self.api_url.replace("#chunk#",str(self._chunk))
 
 		self._image_prefix = self._subdomain;
 
@@ -85,7 +85,7 @@ class TumblrDownloader:
 
 		while True:
 			imagelist	=	self._getimages()
-			self._start += 	self._chuck
+			self._start += 	self._chunk
 
 			if not imagelist:
 				break
@@ -133,7 +133,7 @@ def main(argv):
 	parser = argparse.ArgumentParser(description="Download all images from a Tumblr")
 	parser.add_argument("subdomain", type=str, 
 		help="Tumblr subdomain you want to download")
-	parser.add_argument("--chuck", type=int, default=20, 
+	parser.add_argument("--chunk", type=int, default=20, 
 		help="The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.")
 	parser.add_argument("--total", type=int,
 		help="Total images to download")
@@ -155,7 +155,7 @@ def main(argv):
 	print 'Downloading Subdomain: ', args.subdomain
 
 	try:
-		td = TumblrDownloader(args.subdomain,args.chuck,args.output,args.resolution,args.tagged,args.chrono,
+		td = TumblrDownloader(args.subdomain,args.chunk,args.output,args.resolution,args.tagged,args.chrono,
 			args.total,args.start,args.threads)
 		td.download()
 		print 'All images were downloaded.'
