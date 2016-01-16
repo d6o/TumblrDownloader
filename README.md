@@ -15,7 +15,7 @@ Download all imagens from a Tumblr, in highest resolution
 tumblrdownloader.py [-h] [--chuck CHUCK] [--total TOTAL]
                     [--start START] [--output OUTPUT]
                     [--resolution {1280,500,400,250,100,75}]
-                    [--tagged TAGGED] [--chrono]
+                    [--tagged TAGGED] [--chrono] [--threads THREADS]
                     subdomain
 
 Download all images from a Tumblr
@@ -33,32 +33,27 @@ optional arguments:
                         Select Max Width to download. The default is 1280.
   --tagged TAGGED       Download only images with tag
   --chrono              Sort in chronological order (oldest first)
+  --threads THREADS     Number of parallel downloads. The default is 5.
 ```
-Tumblr: http://bibliammo.tumblr.com/
+Tumblr: http://{subdomain}.tumblr.com/
 
 ###Example 1
 ```bash
- python tumblrdownloader.py bibliammo
+ python tumblrdownloader.py subdomain
 ```
 ###Example 2
 ```bash
- python tumblrdownloader.py --chuck 10 bibliammo
+ python tumblrdownloader.py --chuck 10 subdomain
 ```
 ###Example 3
 ```bash
- python tumblrdownloader.py --output images2 bibliammo
+ python tumblrdownloader.py --output images2 subdomain
 ```
 ###Example 4 
 ```bash
- python tumblrdownloader.py --chuck 1 --output images2 --resolution 100 --chrono --tagged biblia bibliammo
+ python tumblrdownloader.py --chuck 1 --output images2 --resolution 100 --chrono --tagged sunday subdomain
 ```
 
 ## Find a bug/issue or simply want to request a new feature?
 
 [Create a Github issue/feature request!](https://github.com/DiSiqueira/TumblrDownloader/issues/new)
-
-## Upcoming features
-
-* Asynchronous downloads
-* Resume download
-* Limit total downloads

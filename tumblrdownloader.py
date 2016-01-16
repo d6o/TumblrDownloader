@@ -5,25 +5,53 @@
 	download all images from a Tumblr
 '''
 
-import urllib2
 import re
 import os
 import sys
 import argparse
+import urllib
+import threading
+from Queue import Queue
+
+class DownloadThread(threading.Thread):
+    def __init__(self, queue, destfolder, image_prefix):
+        super(DownloadThread, self).__init__()
+
+        self.queue 			= queue
+        self.destfolder 	= destfolder
+        self.image_prefix 	= image_prefix
+        self.daemon 		= True
+
+    def run(self):
+        while True:
+            url = self.queue.get()
+            try:
+                self.download_url(url)
+            except Exception,e:
+                print "   Error: %s"%e
+            self.queue.task_done()
+
+    def download_url(self, url):
+    	image_name = url.split('/')[-1]
+        name = self.image_prefix + "_" + image_name
+        dest = os.path.join(self.destfolder, name)
+        print "[%s] Downloading %s"%(self.ident, image_name)
+        urllib.urlretrieve(url, dest)
 
 class TumblrDownloader:
 
 	api_url	= 'http://#subdomain#.tumblr.com/api/read?type=photo&num=#chuck#&start=#start#' 
 
-	def __init__(self, subdomain, chuck, output, resolution, tagged, chrono, total, start):
+	def __init__(self, subdomain, chuck, output, resolution, tagged, chrono, total, start, threads):
 		self._subdomain = subdomain
-		self._chuck = chuck
-		self._output = output
+		self._chuck 	= chuck
+		self._output 	= output
 		self._resolution = resolution
-		self._tagged = tagged
-		self._chrono = chrono
-		self._total = total
-		self._start = start
+		self._tagged 	= tagged
+		self._chrono 	= chrono
+		self._total 	= total
+		self._start		= start
+		self._threads	= threads
 
 		self.api_url = self.api_url.replace("#subdomain#",self._subdomain)
 		self.api_url = self.api_url.replace("#chuck#",str(self._chuck))
@@ -62,12 +90,16 @@ class TumblrDownloader:
 			if not imagelist:
 				break
 
-			for image in imagelist[0:self._total]:
-				self._downloadimage(image)
-				self._total -= 1;
+			if self._total:
+				imagelist = imagelist[0:self._total]
 
-			if (self._total <= 0):
-				break
+			self._downloadimage(imagelist)
+
+			if self._total:
+				self._total -= len(imagelist);
+
+				if (self._total <= 0):
+					break
 
 	def _getimages(self):
 		'''
@@ -75,9 +107,7 @@ class TumblrDownloader:
 		'''
 		site = self.api_url.replace("#start#",str(self._start))
 
-		print site
-
-		file = urllib2.urlopen(site)
+		file = urllib.urlopen(site)
 		data = file.read()
 		file.close()
 
@@ -85,32 +115,19 @@ class TumblrDownloader:
 		imagelist	= re.findall(regex, data)
 		return imagelist
 
-	def _downloadimage(self,url):
+	def _downloadimage(self,url_list):
 		'''
 			Download a image to subdomain folder.
 		'''
-		file_name 	= self._image_prefix + "_" + url.split('/')[-1]
+		queue = Queue()
+		for url in url_list:
+			queue.put(url)
 
-		u 			= urllib2.urlopen(url)
-		f 			= open(self._folder_path + "/" + file_name, 'wb')
-		meta 		= u.info()
-		file_size 	= int(meta.getheaders("Content-Length")[0])
-		print "Downloading: %s Bytes: %s" % (file_name, file_size)
+		for i in range(self._threads):
+			t = DownloadThread(queue, self._folder_path, self._image_prefix)
+			t.start()
 
-		file_size_dl 	= 0
-		block_sz		= 8192
-		while True:
-		    buffer = u.read(block_sz)
-		    if not buffer:
-		        break
-
-		    file_size_dl += len(buffer)
-		    f.write(buffer)
-		    status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-		    status = status + chr(8)*(len(status)+1)
-		    print status,
-
-		f.close()
+		queue.join()
 
 def main(argv):
 	parser = argparse.ArgumentParser(description="Download all images from a Tumblr")
@@ -130,6 +147,8 @@ def main(argv):
 		help="Download only images with tag")
 	parser.add_argument("--chrono", action="store_true", 
 		help="Sort in chronological order (oldest first)")
+	parser.add_argument("--threads", type=int, default=5, 
+		help="Number of parallel downloads. The default is 5.")
 
 	args = parser.parse_args()
 
@@ -137,7 +156,7 @@ def main(argv):
 
 	try:
 		td = TumblrDownloader(args.subdomain,args.chuck,args.output,args.resolution,args.tagged,args.chrono,
-			args.total,args.start)
+			args.total,args.start,args.threads)
 		td.download()
 		print 'All images were downloaded.'
 	except KeyboardInterrupt:
