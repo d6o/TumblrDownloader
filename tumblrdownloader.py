@@ -8,7 +8,9 @@
 import urllib2
 import re
 import os
-import sys,getopt
+import sys
+import argparse
+
 
 API_URL = "http://#subdomain#.tumblr.com/api/read?type=photo&num=#chunck#&start=#start#"
 
@@ -101,45 +103,26 @@ def help(error):
 	sys.exit(error)
 
 def main(argv):
-	try:
-		opts, args = getopt.getopt(argv,"hs:c:o:",["help","subdomain=","chunck=","output="])
-	except getopt.GetoptError:
-		print 'Argument invalid'
-		help(1)
+	parser = argparse.ArgumentParser(description="Download all images from a Tumblr")
+	parser.add_argument("subdomain", type=str, 
+		help="Tumblr subdomain you want to download")
+	parser.add_argument("--chuck", type=int, default=50, 
+		help="The number of posts to return each call to Tumblrs API")
+	parser.add_argument("--chrono", action="store_true", 
+		help="Sort in chronological order (oldest first)")
+	parser.add_argument("--resolution", type=int, default=1280, choices=[1280, 500, 400, 250, 100, 75],
+        help="Select Max Width to download")
+	parser.add_argument("--output", type=str, default="images", 
+		help="Output folder")
+	parser.add_argument("--tagged", type=str,
+		help="Download only images with tag")
 
-	if not argv:
-		print 'No Arguments found'
-		help(2)
+	args = parser.parse_args()
 
-	chunck = 50
-	output = "images"
-
-	for opt, arg in opts:
-		if opt == ("-h", "--help"):
-			help(0)
-		elif opt in ("-s", "--subdomain"):
-			subdomain = arg
-		elif opt in ("-t", "--chunck"):
-			chunck = arg
-		elif opt in ("-o", "--output"):
-			output = arg
-
-	if not subdomain:
-		print 'Subdomain invalid'
-		help(3)
-
-	if (chunck <1):
-		print 'Chunck invalid'
-		help(4)
-
-	if not output:
-		print 'Output invalid'
-		help(4)
-
-	print 'Downloading Subdomain: ', subdomain
+	print 'Downloading Subdomain: ', args.subdomain
 
 	try:
-		download(subdomain,chunck,output)
+		download(args.subdomain,args.chuck,args.output)
 	except KeyboardInterrupt:
 		print 'Interrupt received, stopping downloads'
 
