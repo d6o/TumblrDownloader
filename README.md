@@ -12,9 +12,10 @@ Download all imagens from a Tumblr, in highest resolution
 ## Usage
 
 ```bash
-tumblrdownloader.py [-h] [--chuck CHUCK] [--chrono]
+tumblrdownloader.py [-h] [--chuck CHUCK] [--total TOTAL]
+                    [--start START] [--output OUTPUT]
                     [--resolution {1280,500,400,250,100,75}]
-                    [--output OUTPUT] [--tagged TAGGED]
+                    [--tagged TAGGED] [--chrono]
                     subdomain
 
 Download all images from a Tumblr
@@ -24,12 +25,14 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --chuck CHUCK         The number of posts to return each call to Tumblrs API
-  --chrono              Sort in chronological order (oldest first)
-  --resolution {1280,500,400,250,100,75}
-                        Select resolution to download
+  --chuck CHUCK         The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.
+  --total TOTAL         Total images to download
+  --start START         The post offset to start from. The default is 0.
   --output OUTPUT       Output folder
+  --resolution {1280,500,400,250,100,75}
+                        Select Max Width to download. The default is 1280.
   --tagged TAGGED       Download only images with tag
+  --chrono              Sort in chronological order (oldest first)
 ```
 Tumblr: http://bibliammo.tumblr.com/
 
