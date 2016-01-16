@@ -1,5 +1,5 @@
 # TumblrDownloader
-Download all imagens from a Tumblr, in highest resolution
+Download all imagens from a Tumblr
 
 ## Screenshots
 
