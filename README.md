@@ -35,7 +35,7 @@ optional arguments:
   --chrono              Sort in chronological order (oldest first)
   --threads THREADS     Number of parallel downloads. The default is 5.
 ```
-Tumblr: http://{subdomain}.tumblr.com/
+Tumblr: http://{subdomain}.tumblr.com
 
 ###Example 1
 ```bash
