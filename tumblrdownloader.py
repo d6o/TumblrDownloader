@@ -13,7 +13,7 @@ import sys
 import argparse
 import urllib
 import threading
-from Queue import Queue
+from queue import Queue
 
 class DownloadThread(threading.Thread):
     def __init__(self, queue, destfolder, image_prefix):
