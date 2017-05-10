@@ -28,14 +28,14 @@ class DownloadThread(threading.Thread):
             try:
                 self.download_url(url)
             except Exception as e:
-                print "   Error: %s"%e
+                print("   Error: %s"%e)
             self.queue.task_done()
 
     def download_url(self, url):
     	image_name = url.split('/')[-1]
         name = self.image_prefix + "_" + image_name
         dest = os.path.join(self.destfolder, name)
-        print "[%s] Downloading %s"%(self.ident, image_name)
+        print("[%s] Downloading %s"%(self.ident, image_name))
         urllib.urlretrieve(url, dest)
 
 class TumblrDownloader:
@@ -152,15 +152,15 @@ def main(argv):
 
 	args = parser.parse_args()
 
-	print 'Downloading Subdomain: ', args.subdomain
+	print('Downloading Subdomain: ', args.subdomain)
 
 	try:
 		td = TumblrDownloader(args.subdomain,args.chunk,args.output,args.resolution,args.tagged,args.chrono,
 			args.total,args.start,args.threads)
 		td.download()
-		print 'All images were downloaded.'
+		print('All images were downloaded.')
 	except KeyboardInterrupt:
-		print 'Interrupt received, stopping downloads'
+		print('Interrupt received, stopping downloads')
 
 	sys.exit()
 
