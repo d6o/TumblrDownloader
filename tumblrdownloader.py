@@ -5,6 +5,8 @@
 	download all images from a Tumblr
 '''
 
+from __future__ import unicode_literals
+
 import re
 import os
 import sys
@@ -111,7 +113,7 @@ class TumblrDownloader:
 		data = file.read()
 		file.close()
 
-		regex		= ur"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
+		regex		= r"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
 		imagelist	= re.findall(regex, data)
 		return imagelist
 
