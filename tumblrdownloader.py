@@ -7,11 +7,15 @@
 
 from __future__ import unicode_literals
 
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
 import re
 import os
 import sys
 import argparse
-import urllib
 import threading
 from queue import Queue
 
@@ -109,7 +113,7 @@ class TumblrDownloader:
 		'''
 		site = self.api_url.replace("#start#",str(self._start))
 
-		file = urllib.urlopen(site)
+		file = urlopen(site)
 		data = file.read()
 		file.close()
 
