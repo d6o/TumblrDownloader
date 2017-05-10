@@ -32,7 +32,7 @@ class DownloadThread(threading.Thread):
             self.queue.task_done()
 
     def download_url(self, url):
-    	image_name = url.split('/')[-1]
+        image_name = url.split('/')[-1]
         name = self.image_prefix + "_" + image_name
         dest = os.path.join(self.destfolder, name)
         print("[%s] Downloading %s"%(self.ident, image_name))
