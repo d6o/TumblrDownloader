@@ -114,7 +114,7 @@ class TumblrDownloader:
 		site = self.api_url.replace("#start#",str(self._start))
 
 		file = urlopen(site)
-		data = file.read()
+		data = file.read().decode('utf8')
 		file.close()
 
 		regex		= r"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
