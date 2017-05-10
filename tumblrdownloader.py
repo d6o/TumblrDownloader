@@ -8,9 +8,9 @@
 from __future__ import unicode_literals
 
 try:
-    from urllib.request import urlopen
+    from urllib.request import urlopen, urlretrieve
 except ImportError:
-    from urllib2 import urlopen
+    from urllib2 import urlopen, urlretrieve
 
 import re
 import os
@@ -42,7 +42,7 @@ class DownloadThread(threading.Thread):
         name = self.image_prefix + "_" + image_name
         dest = os.path.join(self.destfolder, name)
         print("[%s] Downloading %s"%(self.ident, image_name))
-        urllib.urlretrieve(url, dest)
+        urlretrieve(url, dest)
 
 class TumblrDownloader:
 
