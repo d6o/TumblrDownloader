@@ -27,7 +27,7 @@ class DownloadThread(threading.Thread):
             url = self.queue.get()
             try:
                 self.download_url(url)
-            except Exception,e:
+            except Exception as e:
                 print "   Error: %s"%e
             self.queue.task_done()
 
