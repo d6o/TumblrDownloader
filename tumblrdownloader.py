@@ -9,15 +9,18 @@ from __future__ import unicode_literals
 
 try:
     from urllib.request import urlopen, urlretrieve
+    from queue import Queue
 except ImportError:
-    from urllib2 import urlopen, urlretrieve
+    from urllib2 import urlopen
+    from urllib import urlretrieve
+    from Queue import Queue
 
 import re
 import os
 import sys
 import argparse
 import threading
-from queue import Queue
+
 
 class DownloadThread(threading.Thread):
     def __init__(self, queue, destfolder, image_prefix):
