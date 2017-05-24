@@ -13,30 +13,32 @@ import urllib
 import threading
 from Queue import Queue
 
+# a glbal variable that used to check if user want auther's info only
+flag = True
 class DownloadThread(threading.Thread):
-    def __init__(self, queue, destfolder, image_prefix):
-        super(DownloadThread, self).__init__()
+	def __init__(self, queue, destfolder, image_prefix):
+		super(DownloadThread, self).__init__()
 
-        self.queue 			= queue
-        self.destfolder 	= destfolder
-        self.image_prefix 	= image_prefix
-        self.daemon 		= True
+		self.queue 			= queue
+		self.destfolder 	= destfolder
+		self.image_prefix 	= image_prefix
+		self.daemon 		= True
 
-    def run(self):
-        while True:
-            url = self.queue.get()
-            try:
-                self.download_url(url)
-            except Exception,e:
-                print "   Error: %s"%e
-            self.queue.task_done()
+	def run(self):
+		while True:
+			url = self.queue.get()
+			try:
+				self.download_url(url)
+			except Exception,e:
+				print "   Error: %s"%e
+			self.queue.task_done()
 
-    def download_url(self, url):
-    	image_name = url.split('/')[-1]
-        name = self.image_prefix + "_" + image_name
-        dest = os.path.join(self.destfolder, name)
-        print "[%s] Downloading %s"%(self.ident, image_name)
-        urllib.urlretrieve(url, dest)
+	def download_url(self, url):
+		image_name = url.split('/')[-1]
+		name = self.image_prefix + "_" + image_name
+		dest = os.path.join(self.destfolder, name)
+		print "[%s] Downloading %s"%(self.ident, image_name)
+		urllib.urlretrieve(url, dest)
 
 class TumblrDownloader:
 
@@ -84,7 +86,10 @@ class TumblrDownloader:
 		'''
 
 		while True:
+			# check if user want all image or bloger's image only
 			imagelist	=	self._getimages()
+			if not flag:
+				imagelist = self._get_origional_image_only()
 			self._start += 	self._chunk
 
 			if not imagelist:
@@ -128,6 +133,27 @@ class TumblrDownloader:
 			t.start()
 
 		queue.join()
+	def _get_origional_image_only(self):
+    		'''
+		Get all images returned by Tumblr API
+		'''
+		imagelist = []
+		site = self.api_url.replace("#start#",str(self._start))
+
+		file = urllib.urlopen(site)
+		data = file.read()
+		file.close()
+
+		regex = ur"<div class=\"post-wrapper clearfix\""+">(.+?)</article>"
+		
+		postlist = re.findall('(?<=<post).+?(?=</post>)', data, re.DOTALL)
+		for post in postlist:
+			if "reblogged-from-title" in post:
+				continue
+			regex = ur"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
+			imagelist	+= re.findall(regex, post)
+
+		return imagelist
 
 def main(argv):
 	parser = argparse.ArgumentParser(description="Download all images from a Tumblr")
@@ -165,4 +191,8 @@ def main(argv):
 	sys.exit()
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+	global flag
+	cond = raw_input("Do you wanna get Bloger's Picture only?[Y/N]")
+	if cond.lower() in ["y","yes"]:
+		flag = False
+	main(sys.argv[1:])
