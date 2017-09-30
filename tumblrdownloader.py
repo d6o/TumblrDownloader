@@ -5,13 +5,22 @@
 	download all images from a Tumblr
 '''
 
+from __future__ import unicode_literals
+
+try:
+    from urllib.request import urlopen, urlretrieve
+    from queue import Queue
+except ImportError:
+    from urllib2 import urlopen
+    from urllib import urlretrieve
+    from Queue import Queue
+
 import re
 import os
 import sys
 import argparse
-import urllib
 import threading
-from Queue import Queue
+
 
 class DownloadThread(threading.Thread):
     def __init__(self, queue, destfolder, image_prefix):
@@ -27,16 +36,16 @@ class DownloadThread(threading.Thread):
             url = self.queue.get()
             try:
                 self.download_url(url)
-            except Exception,e:
-                print "   Error: %s"%e
+            except Exception as e:
+                print("   Error: %s"%e)
             self.queue.task_done()
 
     def download_url(self, url):
-    	image_name = url.split('/')[-1]
+        image_name = url.split('/')[-1]
         name = self.image_prefix + "_" + image_name
         dest = os.path.join(self.destfolder, name)
-        print "[%s] Downloading %s"%(self.ident, image_name)
-        urllib.urlretrieve(url, dest)
+        print("[%s] Downloading %s"%(self.ident, image_name))
+        urlretrieve(url, dest)
 
 class TumblrDownloader:
 
@@ -107,11 +116,11 @@ class TumblrDownloader:
 		'''
 		site = self.api_url.replace("#start#",str(self._start))
 
-		file = urllib.urlopen(site)
-		data = file.read()
+		file = urlopen(site)
+		data = file.read().decode('utf8')
 		file.close()
 
-		regex		= ur"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
+		regex		= r"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
 		imagelist	= re.findall(regex, data)
 		return imagelist
 
@@ -152,15 +161,15 @@ def main(argv):
 
 	args = parser.parse_args()
 
-	print 'Downloading Subdomain: ', args.subdomain
+	print('Downloading Subdomain: ', args.subdomain)
 
 	try:
 		td = TumblrDownloader(args.subdomain,args.chunk,args.output,args.resolution,args.tagged,args.chrono,
 			args.total,args.start,args.threads)
 		td.download()
-		print 'All images were downloaded.'
+		print('All images were downloaded.')
 	except KeyboardInterrupt:
-		print 'Interrupt received, stopping downloads'
+		print('Interrupt received, stopping downloads')
 
 	sys.exit()
 
