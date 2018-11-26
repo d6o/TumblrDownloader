@@ -12,11 +12,13 @@ Download all imagens from a Tumblr
 ## Usage
 
 ```bash
-tumblrdownloader.py [-h] [--chunk CHUNK] [--total TOTAL]
-                    [--start START] [--output OUTPUT]
-                    [--resolution {1280,500,400,250,100,75}]
-                    [--tagged TAGGED] [--chrono] [--threads THREADS]
-                    subdomain
+usage: tumblrdownloader.py [-h] [--chunk CHUNK] [--total TOTAL]
+                           [--start START] [--output OUTPUT]
+                           [--resolution {1280,500,400,250,100,75}]
+                           [--exclude {jpg,png,gif}]
+                           [--filetype {jpg,png,gif}] [--tagged TAGGED]
+                           [--chrono] [--threads THREADS]
+                           subdomain
 
 Download all images from a Tumblr
 
@@ -31,6 +33,10 @@ optional arguments:
   --output OUTPUT       Output folder
   --resolution {1280,500,400,250,100,75}
                         Select Max Width to download. The default is 1280.
+  --exclude {jpg,png,gif}
+                        Exclude images of given file type
+  --filetype {jpg,png,gif}
+                        Download images of given file type only
   --tagged TAGGED       Download only images with tag
   --chrono              Sort in chronological order (oldest first)
   --threads THREADS     Number of parallel downloads. The default is 5.
