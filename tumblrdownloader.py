@@ -51,11 +51,13 @@ class TumblrDownloader:
 
 	api_url	= 'http://#subdomain#.tumblr.com/api/read?type=photo&num=#chunk#&start=#start#' 
 
-	def __init__(self, subdomain, chunk, output, resolution, tagged, chrono, total, start, threads):
+	def __init__(self, subdomain, chunk, output, resolution, exclude, filetype, tagged, chrono, total, start, threads):
 		self._subdomain = subdomain
 		self._chunk 	= chunk
 		self._output 	= output
 		self._resolution = resolution
+		self._exclude   = exclude
+		self._filetype  = filetype
 		self._tagged 	= tagged
 		self._chrono 	= chrono
 		self._total 	= total
@@ -122,6 +124,10 @@ class TumblrDownloader:
 
 		regex		= r"<photo-url max-width=\"" + str(self._resolution) + "\">(.+?)</photo-url>"
 		imagelist	= re.findall(regex, data)
+		if self._exclude:
+			imagelist = [x for x in imagelist if not x.endswith(self._exclude)]
+		if self._filetype:
+			imagelist = [x for x in imagelist if x.endswith(self._filetype)]
 		return imagelist
 
 	def _downloadimage(self,url_list):
@@ -151,7 +157,11 @@ def main(argv):
 	parser.add_argument("--output", type=str, default="images", 
 		help="Output folder")
 	parser.add_argument("--resolution", type=int, default=1280, choices=[1280, 500, 400, 250, 100, 75],
-        help="Select Max Width to download. The default is 1280.")
+		help="Select Max Width to download. The default is 1280.")
+	parser.add_argument("--exclude", type=str, choices=["jpg", "png", "gif"],
+		help="Exclude images of given file type")
+	parser.add_argument("--filetype", type=str, choices=["jpg", "png", "gif"],
+		help="Download images of given file type only")
 	parser.add_argument("--tagged", type=str,
 		help="Download only images with tag")
 	parser.add_argument("--chrono", action="store_true", 
@@ -164,8 +174,8 @@ def main(argv):
 	print('Downloading Subdomain: ', args.subdomain)
 
 	try:
-		td = TumblrDownloader(args.subdomain,args.chunk,args.output,args.resolution,args.tagged,args.chrono,
-			args.total,args.start,args.threads)
+		td = TumblrDownloader(args.subdomain,args.chunk,args.output,args.resolution,args.exclude,args.filetype,
+			args.tagged,args.chrono,args.total,args.start,args.threads)
 		td.download()
 		print('All images were downloaded.')
 	except KeyboardInterrupt:
