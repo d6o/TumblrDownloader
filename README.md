@@ -1,5 +1,5 @@
 # TumblrDownloader
-Download all imagens from a Tumblr
+Download all images from a Tumblr
 
 ## Screenshots
 
@@ -28,7 +28,7 @@ optional arguments:
   --chunk CHUNK         The number of posts to return each call to Tumblrs API. The default is 20, and the maximum is 50.
   --total TOTAL         Total images to download
   --start START         The post offset to start from. The default is 0.
-  --output OUTPUT       Output folder
+  --output OUTPUT       Output folder. The default is images.
   --resolution {1280,500,400,250,100,75}
                         Select Max Width to download. The default is 1280.
   --tagged TAGGED       Download only images with tag
