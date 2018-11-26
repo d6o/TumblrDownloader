@@ -149,7 +149,7 @@ def main(argv):
 	parser.add_argument("--start", type=int, default=0, 
 		help="The post offset to start from. The default is 0.")
 	parser.add_argument("--output", type=str, default="images", 
-		help="Output folder")
+		help="Output folder. The default is images.")
 	parser.add_argument("--resolution", type=int, default=1280, choices=[1280, 500, 400, 250, 100, 75],
         help="Select Max Width to download. The default is 1280.")
 	parser.add_argument("--tagged", type=str,
